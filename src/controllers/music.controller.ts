@@ -72,5 +72,38 @@ export default class MusicCtrl{
             await this.server.app.locals.dbConnection.release(this.connection);
         }   
     }
+
+    async updateDiskStock(_id: String, disk: IMusic):Promise<IResponse>{
+        
+        try{
+            this.connection = this.server.app.locals.dbConnection
+            /*const searchDisk = await Stock.findById( _id )
+            if(!searchDisk ) {
+                return({ ok: false, message: "Disk not found", response: null, code: 400})
+            }
+
+            const updateDisk = await Stock.updateOne({_id},{$set: disk})
+            
+            if(!updateDisk){
+                return ({ ok: false, message: "Not updating", response: null, code: 400})
+            }
+            return ({ ok: false, message: "Udate Success", response: updateDisk, code: 200})
+            */
+
+            const updateDisk = await Stock.findOneAndUpdate({_id},{$set: disk})
+            if(!updateDisk){
+                return ({ ok: false, message: "Not found and not updating", response: null, code: 400})
+            }
+            return ({ ok: false, message: "Udate Success", response: updateDisk, code: 200})
+        }catch(err){
+            logger.error(`updateDiskStock ${err}`)
+            return ({ ok: false, message: "Ocurrió un error", response: null, code: 500 })
+        }finally{
+            if(this.connection)
+                await this.server.app.locals.dbConnection.release(this.connection)
+        }
+
+    }
 }
 
+1

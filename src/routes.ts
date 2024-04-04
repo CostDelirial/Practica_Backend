@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import logger from "../lib/logger";
 import MusicCtrl from "./controllers/music.controller";
+import IMusic from "./interfaces/int.music";
 
 const routes = Router();
 const musicControl = new MusicCtrl
@@ -36,6 +37,18 @@ routes.delete('/deleteDiskStock/:_id', async ( req: Request, res: Response ) => 
 
     try{
         const response = await musicControl.deleteDiskStock( _id )
+        return res.status(response.code).json(response)
+    }catch(err: any){
+        return res.status(err.code ? err.code: 500).json(err)
+    }
+})
+
+routes.put('/updateDiskStock/:_id', async ( req: Request, res: Response ) => {
+
+    const _id: String = req.params._id
+    const disk: IMusic = req.body
+    try{
+        const response = await musicControl.updateDiskStock( _id, disk )
         return res.status(response.code).json(response)
     }catch(err: any){
         return res.status(err.code ? err.code: 500).json(err)
