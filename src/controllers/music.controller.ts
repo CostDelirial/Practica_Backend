@@ -95,6 +95,7 @@ export default class MusicCtrl{
                 return ({ ok: false, message: "Not found and not updating", response: null, code: 400})
             }
             return ({ ok: false, message: "Udate Success", response: updateDisk, code: 200})
+            
         }catch(err){
             logger.error(`updateDiskStock ${err}`)
             return ({ ok: false, message: "Ocurrió un error", response: null, code: 500 })
