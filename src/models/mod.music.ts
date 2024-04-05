@@ -5,7 +5,7 @@ const musicSchema: Schema = new Schema ({
    
     diskId: {type: Number},
     bandName: { type: String },
-    diskName: { type: String }, 
+    diskName: { type: String}, 
     gender: { type: String, enum: ['Rock', 'Metal', 'Pop', 'Indie'] },
     format: { type: String, enum: ['CD', 'DVD', 'Acetate', 'Cassette'] },
     realeaseAge: { type: Number },
