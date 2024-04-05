@@ -47,9 +47,11 @@ export default class MusicCtrl{
 
 
     async getDiskStock(page: number, per_page: number):Promise <IResponse>{
+        
         if(page <= 0 || per_page <= 0){
             return ({ ok: false, message: 'Value params incorrect', response: null, code: 301 })
         }
+
         try {
             this.connection = this.server.app.locals.dbConnection
 
@@ -61,7 +63,10 @@ export default class MusicCtrl{
 
                     return ({ ok: false, message: 'Sin stock', response: stockDisk, code: 404 })
             }
-            
+            if(stockDisk.length === 0){
+                return { ok: true, message: "No disks found", response: null, code: 204 };
+            }
+
             return ({ ok: true, message: 'Stock encontrado', response: stockDisk, code: 200 })
 
         }catch (err: any) {
