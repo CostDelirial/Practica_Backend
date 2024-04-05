@@ -47,13 +47,22 @@ export default class MusicCtrl{
 
 
     async getDiskStock(page: number, per_page: number):Promise <IResponse>{
+        if(page <= 0 || per_page <= 0){
+            return ({ ok: false, message: 'Value params incorrect', response: null, code: 301 })
+        }
         try {
             this.connection = this.server.app.locals.dbConnection
-            const stockDisk = await Stock.find({}).limit(per_page).skip(per_page * (page -1))
-            if ( !stockDisk || stockDisk.length < 1 ) {
-            return ({ ok: false, message: 'Sin stock', response: stockDisk, code: 404 })
+
+            const skip = per_page * (page-1)
+
+            const stockDisk = await Stock.find({}).limit(per_page).skip(skip)
+
+            if ( !stockDisk ) {
+
+                    return ({ ok: false, message: 'Sin stock', response: stockDisk, code: 404 })
             }
-            return({ ok: true, message: 'Stock encontrado', response: stockDisk, code: 200 })
+            
+            return ({ ok: true, message: 'Stock encontrado', response: stockDisk, code: 200 })
 
         }catch (err: any) {
             logger.error(`getDiskStock ${err}`);
@@ -65,24 +74,23 @@ export default class MusicCtrl{
     }
 
     async deleteDiskStock(id: any):Promise <IResponse>{
+        
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return { ok: false, message: "El ID proporcionado no es válido", response: null, code: 400 };
+        }
 
         try{
             this.connection = this.server.app.locals.dbConnection
 
-            if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-                return { ok: false, message: "El ID proporcionado no es válido", response: null, code: 400 };
-            }
-              
-            if( id ){
-
             const stockDeleted = await Stock.deleteOne({_id: id})
+
             if(stockDeleted.deletedCount === 0){
-                return({ ok: true, message: "Este stock ya fue eliminado con anterioridad", response: stockDeleted, code: 301})  
+
+                return({ ok: false, message: "Este stock ya fue eliminado con anterioridad", response: stockDeleted, code: 301})  
+            
             }
+            
             return({ ok: true, message: "Stock eliminado", response: stockDeleted, code: 200})    
-            }
-            return({ ok: false, message: "Parametros incorrectos", response: null, code: 400})
-                    
             
         }catch(err: any){
             logger.error(`deleteDiskStock ${err}`)
