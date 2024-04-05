@@ -3,6 +3,7 @@ import IResponse from "../interfaces/int.response";
 import logger from "../../lib/logger";
 import Stock from '../models/mod.music';
 import HttpServer from "../class/server.class";
+import mongoose from "mongoose";
 
 export default class MusicCtrl{
 
@@ -63,11 +64,15 @@ export default class MusicCtrl{
         }
     }
 
-    async deleteDiskStock(id: String):Promise <IResponse>{
+    async deleteDiskStock(id: any):Promise <IResponse>{
 
         try{
             this.connection = this.server.app.locals.dbConnection
 
+            if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+                return { ok: false, message: "El ID proporcionado no es válido", response: null, code: 400 };
+            }
+              
             if( id ){
 
             const stockDeleted = await Stock.deleteOne({_id: id})
