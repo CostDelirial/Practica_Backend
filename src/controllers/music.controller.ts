@@ -63,12 +63,17 @@ export default class MusicCtrl{
         }
     }
 
-    async deleteDiskStock(id: any):Promise <IResponse>{
+    async deleteDiskStock(id: String):Promise <IResponse>{
 
         try{
             this.connection = this.server.app.locals.dbConnection
+
             if( id ){
-            const stockDeleted = await Stock.findOneAndDelete( {_id: id })
+
+            const stockDeleted = await Stock.deleteOne({_id: id})
+            if(stockDeleted.deletedCount === 0){
+                return({ ok: true, message: "Este stock ya fue eliminado con anterioridad", response: stockDeleted, code: 301})  
+            }
             return({ ok: true, message: "Stock eliminado", response: stockDeleted, code: 200})    
             }
             return({ ok: false, message: "Parametros incorrectos", response: null, code: 400})
