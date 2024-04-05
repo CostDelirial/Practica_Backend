@@ -20,9 +20,9 @@ export default class MusicCtrl{
             this.connection = this.server.app.locals.dbConnection
 
             if( disk ){
-                const existe = await  Stock.find({diskId: disk.diskId})
+                const existe = await  Stock.findOne({diskId: disk.diskId})
 
-                if(existe.length > 0){
+                if(existe){
                     return({ ok: true, message: "Ya existe ", response: null, code: 301})
                 }
 
